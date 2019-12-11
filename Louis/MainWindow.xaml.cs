@@ -1,26 +1,52 @@
-﻿using System;
+﻿using Panuon.UI.Silver;
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Louis.ViewModel;
-using MahApps.Metro.Controls;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Louis
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// MainWindow1.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow : WindowX
     {
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
+        private bool Requesting = false;
+
         public MainWindow()
         {
             InitializeComponent();
-            Closing += (s, e) => ViewModelLocator.Cleanup();
+            Messenger.Default.Register<bool>(this, "FocusOnSearch", f =>
+            {
+                SearchTextbox.SelectionStart = SearchTextbox.Text.Length;
+                SearchTextbox.Focus();
+            });
+
+            Messenger.Default.Register<bool>(this, "Requesting", f =>
+            {
+                Requesting = f;
+            });
+        }
+
+        private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var offsetValue = (e.OriginalSource as ScrollViewer).VerticalOffset + 356 * 2;
+            var scrollableHeight = (e.OriginalSource as ScrollViewer).ScrollableHeight;
+
+            if (offsetValue >= scrollableHeight)
+            {
+                Messenger.Default.Send(true, "RequestData");
+            }
         }
     }
 }

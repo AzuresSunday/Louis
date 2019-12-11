@@ -1,141 +1,209 @@
-﻿<mah:MetroWindow x:Class="Louis.MainWindow"
-                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:c="clr-namespace:ValueConverters;assembly=ValueConverters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ignore="http://www.galasoft.ch/ignore"
-                 xmlns:local="clr-namespace:Louis" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 Title="Louis Film"
-                 Width="1358" Height="800"
-                 AllowsTransparency="True"
-                 BorderBrush="{StaticResource AccentColorBrush}"
-                 DataContext="{Binding Main, Source={StaticResource Locator}}"
-                 IconTemplate="{StaticResource IconDataTemplate}"
-                 ResizeMode="CanResize"
-                 mc:Ignorable="d ignore">
-    <Window.InputBindings>
+﻿<pu:WindowX x:Class="Louis.MainWindow"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:c="clr-namespace:ValueConverters;assembly=ValueConverters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Louis"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:pu="clr-namespace:Panuon.UI.Silver;assembly=Panuon.UI.Silver"
+            Title="MainWindow1"
+            Width="1125" Height="800"
+            DataContext="{Binding Main, Source={StaticResource Locator}}"
+            Style="{StaticResource LouisWindowsStyle}"
+            WindowStartupLocation="CenterScreen"
+            mc:Ignorable="d">
+    <pu:WindowX.InputBindings>
         <KeyBinding Command="{Binding SearchCommand}" Gesture="Enter" />
-        <KeyBinding Key="F" Command="{Binding ShowSearchCommand}" Modifiers="Control" />
-    </Window.InputBindings>
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Skins/MainSkin.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+        <KeyBinding Key="F" Command="{Binding FocusSearchCommand}" Modifiers="Control" />
+    </pu:WindowX.InputBindings>
+    <pu:WindowX.Resources>
+        <SolidColorBrush x:Key="DefaultForegroundColorBrush" Color="#333333" />
+        <SolidColorBrush x:Key="CommonColorBrush" Color="#C62F2F" />
 
-            <Style TargetType="{x:Type ListBox}">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="ItemsPanel">
-                    <Setter.Value>
-                        <ItemsPanelTemplate>
-                            <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="SelectionMode" Value="Single" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBox}">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ItemsPresenter />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+        <c:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
-            <Style TargetType="{x:Type ListBoxItem}">
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="Margin" Value="8,5" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border BorderThickness="1">
-                                <!--<Border.BorderBrush>
+        <Style TargetType="{x:Type ListBox}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="SelectionMode" Value="Single" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ItemsPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Margin" Value="8,5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border BorderThickness="1">
+                            <!--<Border.BorderBrush>
                                     <local:RevealBorderBrush FallbackColor="White" Color="#808080" />
                                 </Border.BorderBrush>-->
-                                <ContentPresenter />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <DataTemplate x:Key="FilmDataTemplate">
-                <Grid Width="250" Background="Transparent" ClipToBounds="True">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="356" />
-                        <RowDefinition Height="55" />
-                    </Grid.RowDefinitions>
-                    <Image Grid.Row="0" Width="250" Source="{Binding Cover}" Stretch="UniformToFill" />
-                    <StackPanel Grid.Row="1" Margin="0,10">
-                        <TextBlock Text="{Binding Title}" FontSize="16" Foreground="{StaticResource NonActiveBorderColorBrush}" />
-                        <TextBlock Text="{Binding Rate}" Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource NonActiveBorderColorBrush}" />
-                    </StackPanel>
-                </Grid>
-            </DataTemplate>
+        <DataTemplate x:Key="FilmDataTemplate">
+            <Grid Width="250" Background="Transparent" ClipToBounds="True" Focusable="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="356" />
+                    <RowDefinition Height="55" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0"
+                       Width="250"
+                       Focusable="False"
+                       Source="{Binding Cover}"
+                       Stretch="UniformToFill" />
+                <StackPanel Grid.Row="1" Margin="0,10" Focusable="False">
+                    <TextBlock Text="{Binding Title}" Focusable="False" FontSize="16" Foreground="{StaticResource DefaultForegroundColorBrush}" />
+                    <TextBlock Text="{Binding Rate}"
+                               Margin="0,2,0,0"
+                               Focusable="False" FontSize="12" Foreground="#ffac2d" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
 
-            <Style x:Key="TagListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="Foreground" Value="{StaticResource NonActiveBorderColorBrush}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <TextBlock x:Name="Content"
-                                       Text="{Binding Key}"
-                                       Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       FontSize="16"
-                                       Foreground="{TemplateBinding Foreground}" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="White" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Foreground" Value="White" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+        <Style x:Key="TagListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="{StaticResource DefaultForegroundColorBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <TextBlock x:Name="Content"
+                                   Text="{Binding Key}"
+                                   Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Focusable="False" FontSize="14"
+                                   Foreground="{TemplateBinding Foreground}" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource CommonColorBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource CommonColorBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        </ResourceDictionary>
-    </Window.Resources>
-    <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="120" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Height="60" Visibility="{Binding SearchVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Margin="14" BorderBrush="{StaticResource NonActiveBorderColorBrush}" BorderThickness="1">
-                <Grid>
-                    <TextBox Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
-                             VerticalAlignment="Center"
-                             Background="Transparent" BorderThickness="0" FontSize="16"
-                             Foreground="{StaticResource NonActiveBorderColorBrush}" />
-                    <Border HorizontalAlignment="Right" Background="{StaticResource NonActiveBorderColorBrush}">
-                        <Path Margin="5"
-                              Data="M1015.125333 970.001067l-154.3168-154.3168c78.062933-86.698667 126.190933-201.079467 126.190934-326.656C986.999467 219.374933 767.658667 0 498.005333 0 228.352 0 8.942933 219.409067 8.942933 489.028267c0 269.653333 219.409067 489.028267 489.028267 489.028266 116.565333 0 223.675733-41.1648 307.712-109.431466L961.194667 1024l53.930666-53.998933zM85.333333 488.96c0-227.566933 185.1392-412.672 412.672-412.672 227.498667 0 412.672 185.070933 412.672 412.672s-185.105067 412.672-412.672 412.672c-227.601067 0-412.672-185.002667-412.672-412.672z" Fill="White" Stretch="Uniform"
-                              Stroke="White" StrokeThickness="1" />
-                    </Border>
-                </Grid>
-            </Border>
+    </pu:WindowX.Resources>
+    <pu:WindowXCaption.Header>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Louis Film"
+                       Margin="15,0,30,0" VerticalAlignment="Center"
+                       FontSize="18" FontWeight="Light" Foreground="White" />
+            <Grid Grid.Column="1" Margin="10,0,0,0" Visibility="Collapsed">
+                <TextBox Width="220" Height="26"
+                         Padding="10,0,30,0"
+                         pu:TextBoxHelper.CornerRadius="13" pu:TextBoxHelper.FocusedShadowColor="#C62F2F" pu:TextBoxHelper.Watermark="Search film"
+                         Background="{StaticResource CommonColorBrush}"
+                         BorderThickness="0" CaretBrush="White" FontSize="12"
+                         Foreground="White" />
+                <Button Content="&#xf002;"
+                        Margin="0,0,7,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        pu:ButtonHelper.ButtonStyle="Link" pu:ButtonHelper.HoverBrush="White"
+                        FontFamily="{StaticResource FontAwesome}"
+                        FontSize="16" Foreground="#EAEAEA" />
+            </Grid>
         </Grid>
-        <StackPanel Grid.Row="1" Margin="10" Orientation="Vertical">
-            <ListBox ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding GenresCollection}" SelectedItem="{Binding GenresSelected}" />
-            <ListBox Margin="0,5" ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding RegionalCollection}" SelectedItem="{Binding RegionalSelected}" />
-            <ListBox Margin="0,5" ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding AgeCollection}" SelectedItem="{Binding AgeSelected}" />
-            <ListBox ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding SortCollection}" SelectedItem="{Binding SortSelected}" />
+    </pu:WindowXCaption.Header>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="NotOpenDefinition" Width="0" MinWidth="0" MaxWidth="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel x:Name="NotOpen" Grid.Column="0" Background="#FFF5F5F7">
+            <TreeView pu:IconHelper.FontFamily="/Resources/NeteaseExample/#iconfont" pu:TreeViewHelper.ItemHeight="32" pu:TreeViewHelper.ItemPadding="3,0,0,0"
+                      pu:TreeViewHelper.SelectedBackground="#E8E8E8" pu:TreeViewHelper.TreeViewStyle="Modern" Background="Transparent"
+                      BorderBrush="#C62F2F">
+                <TreeViewItem Margin="0,10,0,5" Padding="10,0,0,0" Header="Recommend" Style="{StaticResource TreeViewItem_NonStyle}" />
+
+                <TreeViewItem Margin="0,2"
+                              pu:TreeViewHelper.ItemIcon="&#xe680;" Background="Transparent" Header="Find"
+                              IsSelected="True" />
+                <TreeViewItem Margin="0,2" pu:TreeViewHelper.ItemIcon="&#xe600;" Background="Transparent" Header="Personnal FM" />
+                <TreeViewItem Margin="0,2" pu:TreeViewHelper.ItemIcon="&#xe6d3;" Background="Transparent" Header="Vedios" />
+                <TreeViewItem Margin="0,2" pu:TreeViewHelper.ItemIcon="&#xe6d7;" Background="Transparent" Header="Friends" />
+
+                <TreeViewItem Margin="0,15,0,5" Padding="10,0,0,0" Header="Mine" Style="{StaticResource TreeViewItem_NonStyle}" />
+
+                <TreeViewItem Margin="0,2" pu:TreeViewHelper.ItemIcon="&#xe62b;" Background="Transparent" Header="Local" />
+                <TreeViewItem Margin="0,2" pu:TreeViewHelper.ItemIcon="&#xe615;" Background="Transparent" Header="Download" />
+
+                <TreeViewItem Margin="0,15,0,5" Padding="10,0,0,0" Header="List" Style="{StaticResource TreeViewItem_NonStyle}" />
+
+                <TreeViewItem Margin="0,2" Padding="10,0,0,0"
+                              pu:TreeViewHelper.ItemIcon="&#xecaa;" Background="Transparent" Header="Favorites" />
+            </TreeView>
         </StackPanel>
-        <ScrollViewer Grid.Row="2"
-                      FocusVisualStyle="{x:Null}"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Style="{StaticResource HamburgerScrollViewerStyle}"
-                      VerticalScrollBarVisibility="Auto">
-            <ListBox Margin="5,5" ItemTemplate="{StaticResource FilmDataTemplate}" ItemsSource="{Binding FilmCollection, IsAsync=True}" SelectionMode="Single" />
-        </ScrollViewer>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="25,20">
+                <TextBox x:Name="SearchTextbox"
+                         Text="{Binding SearchWord}"
+                         Height="32"
+                         Padding="5,0,30,0"
+                         pu:TextBoxHelper.FocusedShadowColor="#C62F2F" pu:TextBoxHelper.Watermark="搜索电影、演员、导演"
+                         BorderBrush="{StaticResource CommonColorBrush}"
+                         BorderThickness="1"
+                         CaretBrush="{StaticResource DefaultForegroundColorBrush}"
+                         FocusVisualStyle="{x:Null}"
+                         FontSize="16"
+                         Foreground="{StaticResource DefaultForegroundColorBrush}" />
+                <Button Content="&#xf002;"
+                        Margin="0,0,7,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        pu:ButtonHelper.ButtonStyle="Link"
+                        pu:ButtonHelper.HoverBrush="{StaticResource DefaultForegroundColorBrush}"
+                        Cursor="Hand" Focusable="False"
+                        FontFamily="{StaticResource FontAwesome}"
+                        FontSize="16"
+                        Foreground="{StaticResource CommonColorBrush}" />
+            </Grid>
+            <Grid Grid.Row="1" Margin="20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Vertical">
+                    <ListBox ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding GenresCollection}" SelectedItem="{Binding GenresSelected}" />
+                    <ListBox Margin="0,5" ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding RegionalCollection}" SelectedItem="{Binding RegionalSelected}" />
+                    <ListBox Margin="0,0,0,5" ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding AgeCollection}" SelectedItem="{Binding AgeSelected}" />
+                    <ListBox ItemContainerStyle="{StaticResource TagListBoxItemStyle}" ItemsSource="{Binding SortCollection}" SelectedItem="{Binding SortSelected}" />
+                </StackPanel>
+                <ScrollViewer x:Name="ScrollViewer"
+                              Grid.Row="1"
+                              Margin="0,5"
+                              FocusVisualStyle="{x:Null}"
+                              HorizontalScrollBarVisibility="Disabled" ScrollChanged="ScrollViewer_OnScrollChanged" VerticalScrollBarVisibility="Auto">
+                    <ListBox Margin="-5,0" ItemTemplate="{StaticResource FilmDataTemplate}" ItemsSource="{Binding FilmCollection, IsAsync=True}" SelectionMode="Single" />
+                </ScrollViewer>
+            </Grid>
+        </Grid>
     </Grid>
-</mah:MetroWindow>
+</pu:WindowX>

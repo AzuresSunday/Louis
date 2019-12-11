@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Louis.ViewModel
 {
@@ -24,7 +25,9 @@ namespace Louis.ViewModel
         #region Field
 
         private bool _initialization = false;
-        private string BaseUrl = "https://movie.douban.com/j/new_search_subjects?sort={0}&range=0,10&tags={1}";
+        private string BaseUrl = "https://movie.douban.com/j/new_search_subjects?sort={0}&range=0,10&tags={1}&start={2}";
+        private int start = 0;
+        private const int FACTORSTART = 20;
 
         private readonly Dictionary<string, string> Genres = new Dictionary<string, string>()
         {
@@ -57,7 +60,6 @@ namespace Louis.ViewModel
         public const string FilmSelectedPropertyName = "FilmSelected";
         public const string SortCollectionPropertyName = "SortCollection";
         public const string SortSelectedPropertyName = "SortSelected";
-        public const string SearchVisibilityPropertyName = "SearchVisibility";
         public const string SearchWordPropertyName = "SearchWord";
 
         private ObservableCollection<FilmModel> _filmCollction = null;
@@ -68,7 +70,6 @@ namespace Louis.ViewModel
                 new KeyValuePair<string, string>("评分最高", "S"), new KeyValuePair<string, string>("最新上映", "R")
             };
         private KeyValuePair<string, string> _sortSelected = new KeyValuePair<string, string>("", "");
-        private bool _searchVisibility = false;
         private string _searchWord = string.Empty;
 
         public ObservableCollection<FilmModel> FilmCollection
@@ -98,12 +99,6 @@ namespace Louis.ViewModel
                 if (_initialization)
                     RequestData();
             }
-        }
-
-        public bool SearchVisibility
-        {
-            get => _searchVisibility;
-            set => Set(SearchVisibilityPropertyName, ref _searchVisibility, value);
         }
 
         public string SearchWord
@@ -185,22 +180,19 @@ namespace Louis.ViewModel
 
         #region Command
 
-        private RelayCommand _showSearchCommand;
+        private RelayCommand _focusSearchCommand;
         private RelayCommand _srarchCommand;
 
         /// <summary>
-        /// Gets the ShowSearchCommand.
+        /// Gets the FocusSearchCommand.
         /// </summary>
-        public RelayCommand ShowSearchCommand
+        public RelayCommand FocusSearchCommand
         {
             get
             {
-                return _showSearchCommand
-                    ?? (_showSearchCommand = new RelayCommand(
-                        () =>
-                        {
-                            SearchVisibility = !SearchVisibility;
-                        }));
+                return _focusSearchCommand
+                    ?? (_focusSearchCommand = new RelayCommand(
+                        () => { Messenger.Default.Send(true, "FocusOnSearch"); }));
             }
         }
 
@@ -244,6 +236,8 @@ namespace Louis.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            Messenger.Default.Register<bool>(this, "RequestData", p => RequestData());
+
             _webClient = new WebClient();
 
             FilmCollection = new ObservableCollection<FilmModel>();
@@ -285,23 +279,29 @@ namespace Louis.ViewModel
             if (_asking) return;
 
             var tags = string.Join(",", "电影", GenresSelected.Value, RegionalSelected.Value, AgeSelected.Value);
-            var url = string.Format(BaseUrl, SortSelected.Value, tags);
+            var url = string.Format(BaseUrl, SortSelected.Value, tags, start);
             _asking = true;
             var data = await _webClient.DownloadStringTaskAsync(url);
             var result = JsonConvert.DeserializeObject<FilmResult>(data);
 
-            FilmCollection = new ObservableCollection<FilmModel>(
-                result.data.Select(r => new FilmModel()
-                {
-                    Id = r.id,
-                    Directors = r.directors,
-                    Casts = r.casts,
-                    Title = r.title,
-                    Rate = r.rate,
-                    Cover = r.cover,
-                    Url = r.url,
-                    Star = r.star
-                }));
+            var list = result.data.Select(r => new FilmModel()
+            {
+                Id = r.id,
+                Directors = r.directors,
+                Casts = r.casts,
+                Title = r.title,
+                Rate = r.rate,
+                Cover = r.cover,
+                Url = r.url,
+                Star = r.star
+            });
+
+            foreach (var filmModel in list)
+            {
+                FilmCollection.Add(filmModel);
+            }
+
+            start += FACTORSTART;
 
             _asking = false;
         }
