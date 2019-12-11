@@ -96,6 +96,8 @@ namespace Louis.ViewModel
             set
             {
                 Set(SortSelectedPropertyName, ref _sortSelected, value);
+
+                start = 0;
                 if (_initialization)
                     RequestData();
             }
@@ -147,6 +149,8 @@ namespace Louis.ViewModel
             set
             {
                 Set(GenresSelectedPropertyName, ref  _genresSelected, value);
+
+                start = 0;
                 if (_initialization)
                     RequestData();
             }
@@ -158,6 +162,8 @@ namespace Louis.ViewModel
             set
             {
                 Set(RegionalSelectedPropertyName, ref _regionalSelected, value);
+
+                start = 0;
                 if (_initialization)
                     RequestData();
             }
@@ -169,6 +175,8 @@ namespace Louis.ViewModel
             set
             {
                 Set(AgeSelectedPropertyName, ref _ageSelected, value);
+
+                start = 0;
                 if (_initialization)
                     RequestData();
             }
